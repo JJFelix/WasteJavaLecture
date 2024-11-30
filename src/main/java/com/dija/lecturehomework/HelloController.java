@@ -1,5 +1,5 @@
 package com.dija.lecturehomework;
-
+  
 import com.dija.lecturehomework.model.*;
 import com.dija.lecturehomework.service.MNBArfolyamServiceSoap;
 import com.dija.lecturehomework.service.MNBArfolyamServiceSoapImpl;
