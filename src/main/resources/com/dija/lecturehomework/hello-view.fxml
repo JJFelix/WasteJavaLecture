@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.dija.lecturehomework.HelloController">
+  <!-- Menu fixado no topo -->
+  <top>
+    <MenuBar fx:id="menuBar">
+      <menus>
+        <!-- Menu Database -->
+        <Menu text="Database">
+          <items>
+            <MenuItem text="Read" onAction="#readDatabaseAction"/>
+            <MenuItem text="Read2" onAction="#readDatabaseFilteredAction"/>
+            <MenuItem text="Write" onAction="#writeDatabaseAction"/>
+            <MenuItem text="Change" onAction="#changeDatabaseAction"/>
+            <MenuItem text="Delete" onAction="#deleteDatabaseAction"/>
+          </items>
+        </Menu>
+
+        <!-- Menu SoapClient -->
+        <Menu text="SoapClient">
+          <items>
+            <MenuItem text="Download" onAction="#openDownloadForm"/>
+            <MenuItem text="Download2" onAction="#downloadFilteredSoapData"/>
+            <MenuItem text="Graph" onAction="#graphSoapData"/>
+          </items>
+        </Menu>
+
+        <!-- Menu Parallel -->
+        <Menu text="Parallel">
+          <items>
+            <MenuItem text="Parallel Example" onAction="#parallelAction"/>
+          </items>
+        </Menu>
+
+        <!-- Menu Forex -->
+        <Menu text="Forex">
+          <items>
+            <MenuItem text="Account Information" onAction="#accountInformationAction"/>
+            <MenuItem text="Current Prices" onAction="#currentPricesAction"/>
+            <MenuItem text="Historical Prices" onAction="#historicalPricesAction"/>
+            <MenuItem text="Position Opening" onAction="#positionOpeningAction"/>
+            <MenuItem text="Position Closing" onAction="#positionClosingAction"/>
+            <MenuItem text="Opened Positions" onAction="#openedPositionsAction"/>
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+  </top>
+
+  <!-- Conteúdo central -->
+  <center>
+    <Label fx:id="welcomeText" text="Java applications - Lecture - Homework!" style="-fx-font-size: 18px;" />
+  </center>
+</BorderPane>
