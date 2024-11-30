@@ -118,7 +118,7 @@ public class HelloController {
 
 
 
-    // SOAP Clie
+    // SOAP Cli
 
     @FXML
     protected void onHelloButtonClick() {
