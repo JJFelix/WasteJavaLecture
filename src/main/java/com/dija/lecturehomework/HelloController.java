@@ -1,5 +1,5 @@
 package com.dija.lecturehomework;
-
+   
 import com.dija.lecturehomework.model.*;
 import com.dija.lecturehomework.service.MNBArfolyamServiceSoap;
 import com.dija.lecturehomework.service.MNBArfolyamServiceSoapImpl;
@@ -60,7 +60,7 @@ import com.oanda.v20.position.PositionGetResponse;
 import com.oanda.v20.pricing.PricingGetResponse;
 
 
-
+   
 import java.util.List;
 
 public class HelloController {
@@ -117,8 +117,8 @@ public class HelloController {
 
 
 
-
-    // SOAP Client URL
+ 
+    // SOAP
 
     @FXML
     protected void onHelloButtonClick() {
