@@ -157,7 +157,7 @@
       <dependency>
           <groupId>com.sun.xml.fastinfoset</groupId>
           <artifactId>FastInfoset</artifactId>
-          <version>1.2.13</version>
+          <version>1.2.16</version>
       </dependency>
       <dependency>
       <groupId>javax.annotation</groupId>

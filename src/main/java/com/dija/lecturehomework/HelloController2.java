@@ -1,24 +1,25 @@
 package com.dija.lecturehomework;
-   
+
 import com.dija.lecturehomework.model.*;
 import com.dija.lecturehomework.service.MNBArfolyamServiceSoap;
 import com.dija.lecturehomework.service.MNBArfolyamServiceSoapImpl;
-import com.oanda.v20.order.*;
-import com.oanda.v20.position.PositionCloseRequest;
-import com.oanda.v20.position.PositionCloseResponse;
+import com.oanda.v20.Context;
+import com.oanda.v20.account.AccountID;
+import com.oanda.v20.account.AccountSummary;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
-import com.oanda.v20.primitives.InstrumentName;
+import com.oanda.v20.pricing.PricingGetResponse;
 import com.oanda.v20.trade.TradeCloseRequest;
 import com.oanda.v20.trade.TradeCloseResponse;
 import com.oanda.v20.trade.TradeSpecifier;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.concurrent.Task;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -26,19 +27,12 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.stage.Stage;
-import javafx.geometry.Pos;
-import javafx.scene.paint.Color;
-import java.time.LocalDate;
-import java.util.List;
-import javafx.stage.Stage;
-
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.w3c.dom.Text;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -48,44 +42,37 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.oanda.v20.Context;
-import com.oanda.v20.account.AccountID;
-import com.oanda.v20.account.AccountSummary;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.layout.*;
 
-import com.oanda.v20.position.PositionGetResponse;
-
-import com.oanda.v20.pricing.PricingGetResponse;
-
-
-   
-import java.util.List;
-
-public class HelloController {
+public class HelloController2 {
     @FXML
     private Label welcomeText;
     @FXML
-    private TableView<Pizza> pizzaTableView;
+    private TableView<Resdems> resdemsTableView;
     @FXML
-    private TableView<ResultJoin> resultJoinTableView; 
+    private TableView<ResultJoin2> resultJoinTableView;
     @FXML
-    private TableView<Category> categoryTableView; 
+    private TableView<Calendar> calendarTableView;
     @FXML
+    private TableView<Services> servicesTableView;
 
-    private TableView<Orders> ordersTableView;
+    @FXML
+    private ComboBox<String> wtypeComboBox;
+    @FXML
+    private TextField quantity2TextField;
+    @FXML
+    private TextField demandTextField;
+    @FXML
+    private TextField sdateTextField;
+    @FXML
+    private TextField servidTextField;
+    @FXML
+    private TextField wtypeTextField;
+    @FXML
+    private TextField descriptionTextField;
+
 
     @FXML
-    private ComboBox<String> pizzaComboBox; 
-    @FXML
-    private ComboBox<String> categoryComboBox; 
-    @FXML
-    private TextField pnameTextField; 
-    @FXML
-    private TextField cnameTextField; 
-    @FXML
-    private TextField priceTextField; 
+    private TextField priceTextField;
     @FXML
     private Button downloadButton;
     @FXML
@@ -104,28 +91,23 @@ public class HelloController {
     private NumberAxis yAxis;
     private XYChart.Series<String, Number> series;
     @FXML
-    private TableView<MarketPosition> positionTableView; 
+    private TableView<MarketPosition> positionTableView;
     @FXML
-    private TableColumn<MarketPosition, String> currencyColumn; 
+    private TableColumn<MarketPosition, String> currencyColumn;
     @FXML
-    private TableColumn<MarketPosition, Integer> quantityColumn; 
+    private TableColumn<MarketPosition, Integer> quantityColumn;
     @FXML
-    private TableColumn<MarketPosition, String> statusColumn; 
+    private TableColumn<MarketPosition, String> statusColumn;
 
-    
+
     private Context ctx = new Context(Config.URL, Config.TOKEN);
 
-
-
- 
     // SOA
 
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
     }
-
-
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -146,33 +128,32 @@ public class HelloController {
         VBox vbox = new VBox();
 
         // Cria a TableView para exibir os dados
-        TableView<ResultJoin> tableView = new TableView<>();
+        TableView<ResultJoin2> tableView = new TableView<>();
 
         // Cria as colunas da TableView
-        TableColumn<ResultJoin, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("pname"));
+        TableColumn<ResultJoin2, String> sdateCol = new TableColumn<>("Sdate");
+        sdateCol.setCellValueFactory(new PropertyValueFactory<>("sdate"));
 
-        TableColumn<ResultJoin, String> categoryCol = new TableColumn<>("Category");
-        categoryCol.setCellValueFactory(new PropertyValueFactory<>("categoryname"));
+        TableColumn<ResultJoin2, String> demandCol = new TableColumn<>("Demand");
+        demandCol.setCellValueFactory(new PropertyValueFactory<>("demand"));
 
-        TableColumn<ResultJoin, Boolean> vegetarianCol = new TableColumn<>("Vegetarian");
-        vegetarianCol.setCellValueFactory(new PropertyValueFactory<>("vegetarian"));
+        TableColumn<ResultJoin2, Integer> servidCol = new TableColumn<>("Service ID");
+        servidCol.setCellValueFactory(new PropertyValueFactory<>("servid"));
 
-        TableColumn<ResultJoin, Integer> amountCol = new TableColumn<>("Amount");
-        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        TableColumn<ResultJoin2, String> wtypeCol = new TableColumn<>("Waste Type");
+        wtypeCol.setCellValueFactory(new PropertyValueFactory<>("wtype"));
 
-        TableColumn<ResultJoin, Timestamp> takenCol = new TableColumn<>("Taken");
-        takenCol.setCellValueFactory(new PropertyValueFactory<>("taken"));
+        TableColumn<ResultJoin2, Integer> quantityCol = new TableColumn<>("Quantity");
+        quantityCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
-        // Criação correta da coluna 'Dispatched'
-        TableColumn<ResultJoin, Timestamp> dispatchedCol = new TableColumn<>("Dispatched");
-        dispatchedCol.setCellValueFactory(new PropertyValueFactory<>("dispatched"));
+        TableColumn<ResultJoin2, String> descriptionCol = new TableColumn<>("Description");
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         // Adiciona todas as colunas na TableView
-        tableView.getColumns().addAll(nameCol, categoryCol, vegetarianCol, amountCol, takenCol, dispatchedCol);
+        tableView.getColumns().addAll(sdateCol, demandCol, servidCol, wtypeCol, quantityCol, descriptionCol);
 
         // Carregar dados do banco de dados
-        List<ResultJoin> resultJoin = loadPizzasFromDatabase();
+        List<ResultJoin2> resultJoin = loadWasteDataFromDatabase();
         tableView.getItems().setAll(resultJoin);
 
         // Adiciona a TableView no VBox
@@ -184,51 +165,53 @@ public class HelloController {
         stage.show();
     }
 
-    private List<ResultJoin> loadPizzasFromDatabase() {
-        List<ResultJoin> pizzas = new ArrayList<>();
-        String query = "SELECT p.pname, c.cname, p.vegetarian, o.amount, o.taken, o.dispatched " +
-                "FROM pizza p " +
-                "JOIN category c ON p.categoryname = c.cname " +
-                "JOIN orders o ON p.pname = o.pizzaname";
+    private List<ResultJoin2> loadWasteDataFromDatabase() {
+        List<ResultJoin2> wasteData = new ArrayList<>();
+        String query = "SELECT * FROM Resdems " +
+                "JOIN Calendar ON Calendar.servid = Resdems.servid " +
+                "JOIN Services ON Services.id = Resdems.servid";
+//        Resdems.servid = Services.id
+//        "SELECT id, wtype, description FROM Services where id = servid" ;
         try (Connection connection = DatabaseHelper.connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
 
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ResultJoin resultJoin = new ResultJoin();
-                resultJoin.setPname(rs.getString("pname"));
-                resultJoin.setCategoryname(rs.getString("cname"));
-                resultJoin.setVegetarian(rs.getBoolean("vegetarian"));
-                resultJoin.setAmount(rs.getInt("amount"));
-                resultJoin.setTaken(rs.getTimestamp("taken"));
-                resultJoin.setDispatched(rs.getTimestamp("dispatched"));
-                pizzas.add(resultJoin);
+                ResultJoin2 resultJoin = new ResultJoin2();
+                resultJoin.setSdate(rs.getString("sdate"));
+                resultJoin.setDemand(rs.getString("demand"));
+                resultJoin.setServid(rs.getInt("servid"));
+                resultJoin.setQuantity(rs.getInt("quantity"));
+                resultJoin.setWtype(rs.getString("wtype"));
+                resultJoin.setDescription(rs.getString("description"));
+                wasteData.add(resultJoin);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return pizzas;
+        return wasteData;
     }
-    private List<String> getCategoryNamesFromDatabase() {
-        List<String> categoryNames = new ArrayList<>();
 
-        String query = "SELECT cname FROM category";  
+    private List<String> getWTypesFromDatabase() {
+        List<String> wtypes = new ArrayList<>();
+
+        String query = "SELECT wtype FROM Services";
 
         try (Connection connection = DatabaseHelper.connect();  // Conecta com o banco
              Statement stmt = connection.createStatement();  // Cria um statement
              ResultSet rs = stmt.executeQuery(query)) {  // Executa a consulta SQL
 
             while (rs.next()) {
-                categoryNames.add(rs.getString("cname"));  // Adiciona o nome da categoria na lista
+                wtypes.add(rs.getString("wtype"));  // Adiciona o nome da categoria na lista
             }
         } catch (SQLException e) {
             e.printStackTrace();  // Em caso de erro, exibe a stack trace
         }
 
-        return categoryNames;  // Retorna a lista de categorias
+        return wtypes;  // Retorna a lista de wtypes
     }
 
     public void readDatabaseFilteredAction(ActionEvent actionEvent) {
@@ -241,29 +224,29 @@ public class HelloController {
         vbox.setPadding(new Insets(20));
 
         // Cria a TableView para exibir os dados
-        TableView<ResultJoin> tableView = new TableView<>();
+        TableView<ResultJoin2> tableView = new TableView<>();
 
         // Cria as colunas da TableView
-        TableColumn<ResultJoin, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("pname"));
+        TableColumn<ResultJoin2, String> sdateCol = new TableColumn<>("Sdate");
+        sdateCol.setCellValueFactory(new PropertyValueFactory<>("sdate"));
 
-        TableColumn<ResultJoin, String> categoryCol = new TableColumn<>("Category");
-        categoryCol.setCellValueFactory(new PropertyValueFactory<>("categoryname"));
+        TableColumn<ResultJoin2, String> demandCol = new TableColumn<>("Demand");
+        demandCol.setCellValueFactory(new PropertyValueFactory<>("demand"));
 
-        TableColumn<ResultJoin, Boolean> vegetarianCol = new TableColumn<>("Vegetarian");
-        vegetarianCol.setCellValueFactory(new PropertyValueFactory<>("vegetarian"));
+        TableColumn<ResultJoin2, Integer> servidCol = new TableColumn<>("Service ID");
+        servidCol.setCellValueFactory(new PropertyValueFactory<>("servid"));
 
-        TableColumn<ResultJoin, Integer> amountCol = new TableColumn<>("Amount");
-        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        TableColumn<ResultJoin2, String> wtypeCol = new TableColumn<>("Waste Type");
+        wtypeCol.setCellValueFactory(new PropertyValueFactory<>("wtype"));
 
-        TableColumn<ResultJoin, Timestamp> takenCol = new TableColumn<>("Taken");
-        takenCol.setCellValueFactory(new PropertyValueFactory<>("taken"));
+        TableColumn<ResultJoin2, Integer> quantityCol = new TableColumn<>("Quantity");
+        quantityCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
-        TableColumn<ResultJoin, Timestamp> dispatchedCol = new TableColumn<>("Dispatched");
-        dispatchedCol.setCellValueFactory(new PropertyValueFactory<>("dispatched"));
+        TableColumn<ResultJoin2, String> descriptionCol = new TableColumn<>("Description");
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        // Adiciona as colunas à TableView
-        tableView.getColumns().addAll(nameCol, categoryCol, vegetarianCol, amountCol, takenCol, dispatchedCol);
+        // Adiciona todas as colunas na TableView
+        tableView.getColumns().addAll(sdateCol, demandCol, servidCol, wtypeCol, quantityCol, descriptionCol);
 
         // Formulário de Filtro
         HBox filterHBox = new HBox(15);
@@ -274,47 +257,55 @@ public class HelloController {
         VBox filterVBox = new VBox(10);
         filterVBox.setPrefWidth(300);
 
-        // Name Filter
-        Label pnameLabel = new Label("Name:");
-        TextField pnameTextField = new TextField();
-        pnameTextField.setPromptText("Enter pizza name");
+        // Sdate Filter
+        Label sdateLabel = new Label("Sdate:");
+        TextField sdateTextField = new TextField();
+        sdateTextField.setPromptText("Enter sdate");
 
         // Category Filter
-        Label categoryLabel = new Label("Category:");
-        ComboBox<String> pizzaCategoryComboBox = new ComboBox<>();
-        pizzaCategoryComboBox.getItems().addAll(getCategoryNamesFromDatabase());
+        Label wtypeLabel = new Label("Waste Type:");
+        ComboBox<String> wtypeComboBox = new ComboBox<>();
+        wtypeComboBox.getItems().addAll(getWTypesFromDatabase());
 
-        // Vegetarian Filter
-        Label vegetarianLabel = new Label("Vegetarian:");
-        ToggleGroup vegetarianGroup = new ToggleGroup();
-        RadioButton vegetarianRadioButton = new RadioButton("Yes");
-        vegetarianRadioButton.setToggleGroup(vegetarianGroup);
-        RadioButton nonVegetarianRadioButton = new RadioButton("No");
-        nonVegetarianRadioButton.setToggleGroup(vegetarianGroup);
+        // Demand Filter
+        Label demandLabel = new Label("Demand:");
+        TextField demandTextField = new TextField();
+        demandTextField.setPromptText("Enter demand(date)");
 
-        // Amount Filter
-        Label amountLabel = new Label("Amount:");
-        TextField amountTextField = new TextField();
+        // Quantity Filter
+        Label quantityLabel = new Label("Quantity:");
+        TextField quantityTextField = new TextField();
 
-        // Taken Date Filter
-        Label takenLabel = new Label("Taken Date:");
-        DatePicker takenDatePicker = new DatePicker();
 
-        // Dispatched Date Filter
-        Label dispatchedLabel = new Label("Dispatched Date:");
-        DatePicker dispatchedDatePicker = new DatePicker();
+//        // Vegetarian Filter
+//        Label vegetarianLabel = new Label("Vegetarian:");
+//        ToggleGroup vegetarianGroup = new ToggleGroup();
+//        RadioButton vegetarianRadioButton = new RadioButton("Yes");
+//        vegetarianRadioButton.setToggleGroup(vegetarianGroup);
+//        RadioButton nonVegetarianRadioButton = new RadioButton("No");
+//        nonVegetarianRadioButton.setToggleGroup(vegetarianGroup);
+//
+//        // Amount Filter
+//        Label amountLabel = new Label("Amount:");
+//        TextField amountTextField = new TextField();
+//
+//        // Taken Date Filter
+//        Label takenLabel = new Label("Taken Date:");
+//        DatePicker takenDatePicker = new DatePicker();
+//
+//        // Dispatched Date Filter
+//        Label dispatchedLabel = new Label("Dispatched Date:");
+//        DatePicker dispatchedDatePicker = new DatePicker();
 
         // Organiza os campos de filtro no VBox
-        filterVBox.getChildren().addAll(pnameLabel, pnameTextField, categoryLabel, pizzaCategoryComboBox, vegetarianLabel,
-                vegetarianRadioButton, nonVegetarianRadioButton, amountLabel, amountTextField, takenLabel, takenDatePicker,
-                dispatchedLabel, dispatchedDatePicker);
+        filterVBox.getChildren().addAll(sdateLabel, sdateTextField, wtypeLabel, wtypeComboBox,
+                demandLabel, demandTextField, quantityLabel, quantityTextField);
 
         // Botão para aplicar o filtro
         Button applyFilterButton = new Button("Apply Filter");
         applyFilterButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
         applyFilterButton.setOnAction(e -> {
-            List<ResultJoin> filteredResults = applyFilter(pnameTextField, pizzaCategoryComboBox, vegetarianGroup,
-                    amountTextField, takenDatePicker, dispatchedDatePicker);
+            List<ResultJoin2> filteredResults = applyFilter(sdateTextField, wtypeComboBox, demandTextField, quantityTextField);
             tableView.getItems().setAll(filteredResults);  // Atualiza os resultados na TableView
         });
 
@@ -329,87 +320,74 @@ public class HelloController {
         stage.setScene(scene);
         stage.show();
     }
-    private List<ResultJoin> applyFilter(TextField pnameTextField, ComboBox<String> pizzaCategoryComboBox,
-                                         ToggleGroup vegetarianGroup, TextField amountTextField, DatePicker takenDatePicker, DatePicker dispatchedDatePicker) {
-        List<ResultJoin> filteredResults = new ArrayList<>();
 
-        String pname = pnameTextField.getText();
-        String category = pizzaCategoryComboBox.getValue();
-        Boolean vegetarian = null;
+    private List<ResultJoin2> applyFilter(TextField sdateTextField, ComboBox<String> wtypeComboBox,
+                                         TextField demandTextField, TextField quantityTextField)
+    {
+        List<ResultJoin2> filteredResults = new ArrayList<>();
 
-        if (vegetarianGroup.getSelectedToggle() != null) {
-            RadioButton selectedRadioButton = (RadioButton) vegetarianGroup.getSelectedToggle();
-            vegetarian = selectedRadioButton.getText().equals("Yes");
+        String sdate = sdateTextField.getText();
+        String wtype = wtypeComboBox.getValue();
+        String demand = demandTextField.getText();
+//        String quantity = String.valueOf(Integer.parseInt(quantityTextField.getText()));;
+
+        Integer quantity = quantityTextField.getText().isEmpty() ? null : Integer.parseInt(quantityTextField.getText());
+
+        String query =
+                    "SELECT c.sdate, r.demand, r.servid, r.quantity, s.wtype, s.description " +
+                        "FROM Resdems r " +
+                        "JOIN Calendar c ON c.servid = r.servid " +
+                            "JOIN Services s ON s.id = r.servid " +
+                        "WHERE 1=1 ";
+
+//                    "SELECT * FROM Resdems r WHERE r.demand LIKE ? and quantity LIKE ? " +
+//                            "JOIN Calendar ON Calendar.servid = Resdems.servid " +
+//                            "JOIN Services ON Services.id = Resdems.servid"
+//                            ;
+
+        if (sdate != null && !sdate.isEmpty()) {
+            query += "AND c.sdate LIKE ? ";
+        }
+        if (wtype != null && !wtype.isEmpty()) {
+            query += "AND s.wtype LIKE ? ";
+        }
+        if (demand != null && !demand.isEmpty()) {
+            query += "AND r.demand LIKE ? ";
+        }
+        if (quantity != null) {
+            query += "AND r.quantity = ? ";
         }
 
-        Integer amount = amountTextField.getText().isEmpty() ? null : Integer.parseInt(amountTextField.getText());
-        Timestamp taken = takenDatePicker.getValue() == null ? null : Timestamp.valueOf(takenDatePicker.getValue().atStartOfDay());
-        Timestamp dispatched = dispatchedDatePicker.getValue() == null ? null : Timestamp.valueOf(dispatchedDatePicker.getValue().atStartOfDay());
-
         // Carregar os dados do banco com o filtro aplicado
-        try (Connection connection = DatabaseHelper.connect()) {
-            String query = "SELECT p.pname, c.cname, p.vegetarian, o.amount, o.taken, o.dispatched " +
-                    "FROM pizza p " +
-                    "JOIN category c ON p.categoryname = c.cname " +
-                    "JOIN orders o ON p.pname = o.pizzaname WHERE 1=1 ";
-
-            if (pname != null && !pname.isEmpty()) {
-                query += "AND p.pname LIKE ? ";
-            }
-            if (category != null && !category.isEmpty()) {
-                query += "AND c.cname = ? ";
-            }
-            if (vegetarian != null) {
-                query += "AND p.vegetarian = ? ";
-            }
-            if (amount != null) {
-                query += "AND o.amount = ? ";
-            }
-            if (taken != null) {
-                query += "AND o.taken = ? ";
-            }
-            if (dispatched != null) {
-                query += "AND o.dispatched = ? ";
-            }
-
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DatabaseHelper.connect();
+            PreparedStatement stmt = connection.prepareStatement(query)) {
                 int index = 1;
 
-                if (pname != null && !pname.isEmpty()) {
-                    stmt.setString(index++, "%" + pname + "%");
+                if (sdate != null && !sdate.isEmpty()) {
+                    stmt.setString(index++, sdate);
                 }
-                if (category != null && !category.isEmpty()) {
-                    stmt.setString(index++, category);
+                if (wtype != null && !wtype.isEmpty()) {
+                    stmt.setString(index++, wtype);
                 }
-                if (vegetarian != null) {
-                    stmt.setBoolean(index++, vegetarian);
+                if (demand != null && !demand.isEmpty()) {
+                    stmt.setString(index++, demand);
                 }
-                if (amount != null) {
-                    stmt.setInt(index++, amount);
-                }
-                if (taken != null) {
-                    stmt.setTimestamp(index++, taken);
-                }
-                if (dispatched != null) {
-                    stmt.setTimestamp(index++, dispatched);
+                if (quantity != null) {
+                    stmt.setInt(index++, quantity);
                 }
 
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    ResultJoin resultJoin = new ResultJoin();
-                    resultJoin.setPname(rs.getString("pname"));
-                    resultJoin.setCategoryname(rs.getString("cname"));
-                    resultJoin.setVegetarian(rs.getBoolean("vegetarian"));
-                    resultJoin.setAmount(rs.getInt("amount"));
-                    resultJoin.setTaken(rs.getTimestamp("taken"));
-                    resultJoin.setDispatched(rs.getTimestamp("dispatched"));
+                    ResultJoin2 resultJoin = new ResultJoin2();
+                    resultJoin.setSdate(rs.getString("sdate"));
+                    resultJoin.setDemand(rs.getString("demand"));
+                    resultJoin.setServid(rs.getInt("servid"));
+                    resultJoin.setQuantity(rs.getInt("quantity"));
+                    resultJoin.setWtype(rs.getString("wtype"));
+                    resultJoin.setDescription(rs.getString("description"));
                     filteredResults.add(resultJoin);
                 }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -418,68 +396,72 @@ public class HelloController {
     }
 
     // (Write submenu)
-    private void insertIntoCategory(TextField cnameTextField, TextField priceTextField) {
-        String cname = cnameTextField.getText();
-        double price = priceTextField.getText().isEmpty() ? 0.0 : Double.parseDouble(priceTextField.getText());
+    private void insertIntoCalendar(TextField sdateTextField, TextField servidTextField) {
+        String sdate = sdateTextField.getText();
+        Integer servid = servidTextField.getText().isEmpty() ? null : Integer.parseInt(servidTextField.getText());
 
         try (Connection connection = DatabaseHelper.connect()) {
-            String query = "INSERT INTO category (cname, price) VALUES (?, ?)";
+            String query = "INSERT INTO Calendar (sdate, servid) VALUES (?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setString(1, cname);
-                stmt.setDouble(2, price);
+                stmt.setString(1, sdate);
+                stmt.setInt(2, servid);
 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Category inserted successfully!");
+                    showAlert("Success", "Calendar inserted successfully!");
+                    System.out.println("Calendar inserted successfully!");
                 }
             }
         } catch (SQLException e) {
+            showAlert("Error", "An error occurred!");
             e.printStackTrace();
         }
     }
 
-    private void insertIntoPizza(TextField pnameTextField, ComboBox<String> categoryComboBox, CheckBox vegetarianCheckBox) {
-        String pname = pnameTextField.getText();
-        String category = categoryComboBox.getValue();
-        boolean vegetarian = vegetarianCheckBox.isSelected();
+    private void insertIntoResdems(TextField demandTextField, TextField resdemsservidTextField,TextField quantityTextField) {
+        String demand = demandTextField.getText();
+        Integer servid = resdemsservidTextField.getText().isEmpty() ? null : Integer.parseInt(quantityTextField.getText());
+        Integer quantity = quantityTextField.getText().isEmpty() ? null : Integer.parseInt(quantityTextField.getText());
 
         try (Connection connection = DatabaseHelper.connect()) {
-            String query = "INSERT INTO pizza (pname, categoryname, vegetarian) VALUES (?, ?, ?)";
+            String query = "INSERT INTO Resdems (demand, servid, quantity) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setString(1, pname);
-                stmt.setString(2, category);
-                stmt.setBoolean(3, vegetarian);
+                stmt.setString(1, demand);
+                stmt.setInt(2, servid);
+                stmt.setInt(3, quantity);
 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Pizza inserted successfully!");
+                    showAlert("Success", "Resdems inserted successfully!");
+                    System.out.println("Resdems inserted successfully!");
                 }
             }
         } catch (SQLException e) {
+            showAlert("Error", "An error occurred!");
             e.printStackTrace();
         }
     }
 
-    private void insertIntoOrders(TextField pizzanameTextField, TextField amountTextField, DatePicker dispatchedDatePicker) {
-        String pizzaname = pizzanameTextField.getText();
-        int amount = amountTextField.getText().isEmpty() ? 0 : Integer.parseInt(amountTextField.getText());
-        Timestamp taken = new Timestamp(System.currentTimeMillis());
-        Timestamp dispatched = dispatchedDatePicker.getValue() == null ? null : Timestamp.valueOf(dispatchedDatePicker.getValue().atStartOfDay());
+    private void insertIntoServices(TextField idTextField, TextField wtypeTextField, TextField descriptionTextField) {
+        int id = idTextField.getText().isEmpty() ? null : Integer.parseInt(idTextField.getText());
+        String wtype = wtypeTextField.getText();
+        String description = descriptionTextField.getText();
 
         try (Connection connection = DatabaseHelper.connect()) {
-            String query = "INSERT INTO orders (pizzaname, amount, taken, dispatched) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO Services (id, wtype, description) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setString(1, pizzaname);
-                stmt.setInt(2, amount);
-                stmt.setTimestamp(3, taken);
-                stmt.setTimestamp(4, dispatched);
+                stmt.setInt(1, id);
+                stmt.setString(2, wtype);
+                stmt.setString(3, description);
 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Order inserted successfully!");
+                    showAlert("Success", "Service inserted successfully!");
+                    System.out.println("Service inserted successfully!");
                 }
             }
         } catch (SQLException e) {
+            showAlert("Error", "An error occurred!");
             e.printStackTrace();
         }
     }
@@ -494,52 +476,52 @@ public class HelloController {
         // ComboBox para selecionar a tabela
         Label tableLabel = new Label("Select Table:");
         ComboBox<String> tableComboBox = new ComboBox<>();
-        tableComboBox.getItems().addAll("Category", "Pizza", "Orders");
+        tableComboBox.getItems().addAll("Calendar", "Resdems", "Services");
 
         // Layouts para cada tabela
-        VBox categoryForm = new VBox(10);
-        TextField cnameTextField = new TextField();
-        TextField priceTextField = new TextField();
-        categoryForm.getChildren().addAll(new Label("Category Name:"), cnameTextField, new Label("Price:"), priceTextField);
+        VBox calendarForm = new VBox(10);
+        TextField sdateTextField = new TextField();
+        TextField servidTextField = new TextField();
+        calendarForm.getChildren().addAll(new Label("Sdate:"), sdateTextField, new Label("Servid:"), servidTextField);
 
-        VBox pizzaForm = new VBox(10);
-        TextField pnameTextField = new TextField();
-        ComboBox<String> categoryComboBox = new ComboBox<>(FXCollections.observableArrayList(getCategoryNamesFromDatabase()));
-        CheckBox vegetarianCheckBox = new CheckBox("Vegetarian");
-        pizzaForm.getChildren().addAll(new Label("Pizza Name:"), pnameTextField, new Label("Category:"), categoryComboBox, vegetarianCheckBox);
+        VBox resdemsForm = new VBox(10);
+        TextField demandTextField = new TextField();
+        TextField resdemsservidTextField = new TextField();
+        TextField quantityTextField = new TextField();
+        resdemsForm.getChildren().addAll(new Label("Demand(Date):"), demandTextField, new Label("Servid:"), resdemsservidTextField, new Label("Quantity:"), quantityTextField);
 
-        VBox ordersForm = new VBox(10);
-        TextField pizzanameTextField = new TextField();
-        TextField amountTextField = new TextField();
-        DatePicker dispatchedDatePicker = new DatePicker();
-        ordersForm.getChildren().addAll(new Label("Pizza Name:"), pizzanameTextField, new Label("Amount:"), amountTextField,
-                new Label("Dispatched Date:"), dispatchedDatePicker);
+        VBox servicesForm = new VBox(10);
+        TextField idTextField = new TextField();
+        TextField wtypeTextField = new TextField();
+        TextField descriptionTextField = new TextField();
+        servicesForm.getChildren().addAll(new Label("ID:"), idTextField, new Label("Waste Type:"), wtypeTextField, new Label("Descrption:"), descriptionTextField);
 
         // Botão de envio
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
             String selectedTable = tableComboBox.getValue();
-            if ("Category".equals(selectedTable)) {
-                insertIntoCategory(cnameTextField, priceTextField);
-            } else if ("Pizza".equals(selectedTable)) {
-                insertIntoPizza(pnameTextField, categoryComboBox, vegetarianCheckBox);
-            } else if ("Orders".equals(selectedTable)) {
-                insertIntoOrders(pizzanameTextField, amountTextField, dispatchedDatePicker);
+            if ("Calendar".equals(selectedTable)) {
+                insertIntoCalendar(sdateTextField, servidTextField);
+            } else if ("Resdems".equals(selectedTable)) {
+                insertIntoResdems(demandTextField, resdemsservidTextField, quantityTextField);
+            } else if ("Services".equals(selectedTable)) {
+                insertIntoServices(idTextField, wtypeTextField, descriptionTextField);
             }
         });
 
         // Atualiza o layout com base na seleção
         tableComboBox.setOnAction(e -> {
             vbox.getChildren().remove(1, vbox.getChildren().size() - 1);
-            if ("Category".equals(tableComboBox.getValue())) {
-                vbox.getChildren().add(categoryForm);
-            } else if ("Pizza".equals(tableComboBox.getValue())) {
-                vbox.getChildren().add(pizzaForm);
-            } else if ("Orders".equals(tableComboBox.getValue())) {
-                vbox.getChildren().add(ordersForm);
+            if ("Calendar".equals(tableComboBox.getValue())) {
+                vbox.getChildren().add(calendarForm);
+            } else if ("Resdems".equals(tableComboBox.getValue())) {
+                vbox.getChildren().add(resdemsForm);
+            } else if ("Services".equals(tableComboBox.getValue())) {
+                vbox.getChildren().add(servicesForm);
             }
             vbox.getChildren().add(submitButton);
         });
+
 
         vbox.getChildren().addAll(tableLabel, tableComboBox);
 
@@ -547,7 +529,6 @@ public class HelloController {
         stage.setScene(scene);
         stage.show();
     }
-
 
     // (Change submenu)
     public void changeDatabaseAction(ActionEvent actionEvent) {
@@ -560,7 +541,7 @@ public class HelloController {
         // Dropdown para escolher a tabela
         Label tableLabel = new Label("Select Table:");
         ComboBox<String> tableComboBox = new ComboBox<>();
-        tableComboBox.getItems().addAll("Category", "Pizza", "Orders");
+        tableComboBox.getItems().addAll("Calendar", "Resdems", "Services");
 
         // Dropdown para selecionar a PK
         Label pkLabel = new Label("Select Record:");
@@ -580,9 +561,9 @@ public class HelloController {
                 pkComboBox.setDisable(false);
                 pkComboBox.getItems().clear();
                 switch (selectedTable) {
-                    case "Category" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Category", "cname"));
-                    case "Pizza" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Pizza", "pname"));
-                    case "Orders" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Orders", "id"));
+                    case "Calendar" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Calendar", "id"));
+                    case "Resdems" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Resdems", "id"));
+                    case "Services" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Services", "id"));
                 }
             }
         });
@@ -594,9 +575,9 @@ public class HelloController {
             if (selectedPk != null) {
                 fieldContainer.getChildren().clear();
                 switch (selectedTable) {
-                    case "Category" -> populateCategoryFields(fieldContainer, selectedPk);
-                    case "Pizza" -> populatePizzaFields(fieldContainer, selectedPk);
-                    case "Orders" -> populateOrdersFields(fieldContainer, selectedPk);
+                    case "Calendar" -> populateCalendarFields(fieldContainer, selectedPk);
+                    case "Resdems" -> populateResdemsFields(fieldContainer, selectedPk);
+                    case "Services" -> populateServicesFields(fieldContainer, selectedPk);
                 }
                 updateButton.setDisable(false); // Habilitar o botão de atualização após a seleção
             }
@@ -608,9 +589,9 @@ public class HelloController {
             String selectedPk = pkComboBox.getValue();
             if (selectedTable != null && selectedPk != null) {
                 switch (selectedTable) {
-                    case "Category" -> updateCategory(selectedPk, fieldContainer);
-                    case "Pizza" -> updatePizza(selectedPk, fieldContainer);
-                    case "Orders" -> updateOrders(selectedPk, fieldContainer);
+                    case "Calendar" -> updateCalendar(selectedPk, fieldContainer);
+                    case "Resdems" -> updateResdems(selectedPk, fieldContainer);
+                    case "Services" -> updateServices(selectedPk, fieldContainer);
                 }
             }
         });
@@ -637,67 +618,19 @@ public class HelloController {
         return primaryKeys;
     }
 
-    private void populateCategoryFields(VBox container, String cname) {
-        String query = "SELECT cname, price FROM Category WHERE cname = ?";
-        try (Connection connection = DatabaseHelper.connect();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, cname);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                TextField cnameField = new TextField(rs.getString("cname"));
-                TextField priceField = new TextField(String.valueOf(rs.getDouble("price")));
-
-                container.getChildren().addAll(
-                        new Label("Category Name:"), cnameField,
-                        new Label("Price:"), priceField
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void populatePizzaFields(VBox container, String pname) {
-        String query = "SELECT pname, categoryname, vegetarian FROM Pizza WHERE pname = ?";
-        try (Connection connection = DatabaseHelper.connect();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, pname);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                TextField pnameField = new TextField(rs.getString("pname"));
-                TextField categoryField = new TextField(rs.getString("categoryname"));
-                CheckBox vegetarianField = new CheckBox("Vegetarian");
-                vegetarianField.setSelected(rs.getBoolean("vegetarian"));
-
-                container.getChildren().addAll(
-                        new Label("Pizza Name:"), pnameField,
-                        new Label("Category Name:"), categoryField,
-                        vegetarianField
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void populateOrdersFields(VBox container, String id) {
-        String query = "SELECT pizzaname, amount, dispatched FROM Orders WHERE id = ?";
+    private void populateCalendarFields(VBox container, String id) {
+        String query = "SELECT sdate, servid FROM Calendar WHERE id = ?";
         try (Connection connection = DatabaseHelper.connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, Integer.parseInt(id));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                TextField pizzanameField = new TextField(rs.getString("pizzaname"));
-                TextField amountField = new TextField(String.valueOf(rs.getInt("amount")));
-                DatePicker dispatchedField = new DatePicker();
-                if (rs.getTimestamp("dispatched") != null) {
-                    dispatchedField.setValue(rs.getTimestamp("dispatched").toLocalDateTime().toLocalDate());
-                }
+                TextField sdateField = new TextField(rs.getString("sdate"));
+                TextField servidField = new TextField(String.valueOf(rs.getInt("servid")));
 
                 container.getChildren().addAll(
-                        new Label("Pizza Name:"), pizzanameField,
-                        new Label("Amount:"), amountField,
-                        new Label("Dispatched Date:"), dispatchedField
+                        new Label("Sdate:"), sdateField,
+                        new Label("Serv ID:"), servidField
                 );
             }
         } catch (SQLException e) {
@@ -705,51 +638,95 @@ public class HelloController {
         }
     }
 
-    private void updateCategory(String selectedPk, VBox fieldContainer) {
-        TextField cnameField = (TextField) fieldContainer.getChildren().get(1);
-        TextField priceField = (TextField) fieldContainer.getChildren().get(3);
-
-        String query = "UPDATE Category SET cname = ?, price = ? WHERE cname = ?";
+    private void populateResdemsFields(VBox container, String id) {
+        String query = "SELECT demand, servid, quantity FROM Resdems WHERE id = ?";
         try (Connection connection = DatabaseHelper.connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, cnameField.getText());
-            stmt.setDouble(2, Double.parseDouble(priceField.getText()));
-            stmt.setString(3, selectedPk);
+            stmt.setInt(1, Integer.parseInt(id));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                TextField demandField = new TextField(rs.getString("demand"));
+                TextField servidField = new TextField(String.valueOf(rs.getInt("servid")));
+                TextField quantityField = new TextField(String.valueOf(rs.getInt("quantity")));
+
+                container.getChildren().addAll(
+                        new Label("Demand:"), demandField,
+                        new Label("Serv ID:"), servidField,
+                        new Label("Quantity:"), quantityField
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void populateServicesFields(VBox container, String id) {
+        String query = "SELECT id, wtype, description FROM Services WHERE id = ?";
+        try (Connection connection = DatabaseHelper.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, Integer.parseInt(id));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                TextField idField = new TextField(String.valueOf(rs.getInt("id")));
+                TextField wtypeField = new TextField(rs.getString("wtype"));
+                TextField descriptionField = new TextField(rs.getString("description"));
+
+                container.getChildren().addAll(
+                        new Label("ID: "), idField,
+                        new Label("Waste Type:"), wtypeField,
+                        new Label("Description:"), descriptionField
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateCalendar(String selectedPk, VBox fieldContainer) {
+        TextField sdateField = (TextField) fieldContainer.getChildren().get(1);
+        TextField servidField = (TextField) fieldContainer.getChildren().get(3);
+
+        String query = "UPDATE Calendar SET sdate = ?, servid = ? WHERE id = ?";
+        try (Connection connection = DatabaseHelper.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, sdateField.getText());
+            stmt.setInt(2, Integer.parseInt(servidField.getText()));
+            stmt.setInt(3, Integer.parseInt(selectedPk));
             executeUpdate(stmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void updatePizza(String selectedPk, VBox fieldContainer) {
-        TextField pnameField = (TextField) fieldContainer.getChildren().get(1);
-        TextField categoryField = (TextField) fieldContainer.getChildren().get(3);
-        CheckBox vegetarianField = (CheckBox) fieldContainer.getChildren().get(5);
+    private void updateResdems(String selectedPk, VBox fieldContainer) {
+        TextField demandField = (TextField) fieldContainer.getChildren().get(1);
+        TextField servidField = (TextField) fieldContainer.getChildren().get(3);
+        TextField quantityField = (TextField) fieldContainer.getChildren().get(5);
 
-        String query = "UPDATE Pizza SET pname = ?, categoryname = ?, vegetarian = ? WHERE pname = ?";
+        String query = "UPDATE Resdems SET demand = ?, servid = ?, quantity = ? WHERE id = ?";
         try (Connection connection = DatabaseHelper.connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, pnameField.getText());
-            stmt.setString(2, categoryField.getText());
-            stmt.setBoolean(3, vegetarianField.isSelected());
-            stmt.setString(4, selectedPk);
+            stmt.setString(1, demandField.getText());
+            stmt.setInt(2, Integer.parseInt(servidField.getText()));
+            stmt.setInt(3, Integer.parseInt(quantityField.getText()));
+            stmt.setInt(4, Integer.parseInt(selectedPk));
             executeUpdate(stmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateOrders(String selectedPk, VBox fieldContainer) {
-        TextField pizzanameField = (TextField) fieldContainer.getChildren().get(1);
-        TextField amountField = (TextField) fieldContainer.getChildren().get(3);
-        DatePicker dispatchedField = (DatePicker) fieldContainer.getChildren().get(5);
+    private void updateServices(String selectedPk, VBox fieldContainer) {
+        TextField idField = (TextField) fieldContainer.getChildren().get(1);
+        TextField wtypeField = (TextField) fieldContainer.getChildren().get(3);
+        TextField descriptionField = (TextField) fieldContainer.getChildren().get(5);
 
-        String query = "UPDATE Orders SET pizzaname = ?, amount = ?, dispatched = ? WHERE id = ?";
+        String query = "UPDATE Services SET id = ?, wtype = ?, description = ? WHERE id = ?";
         try (Connection connection = DatabaseHelper.connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, pizzanameField.getText());
-            stmt.setInt(2, Integer.parseInt(amountField.getText()));
-            stmt.setDate(3, dispatchedField.getValue() != null ? Date.valueOf(dispatchedField.getValue()) : null);
+            stmt.setInt(1, Integer.parseInt(idField.getText()));
+            stmt.setString(2, wtypeField.getText());
+            stmt.setString(3, descriptionField.getText());
             stmt.setInt(4, Integer.parseInt(selectedPk));
             executeUpdate(stmt);
         } catch (SQLException e) {
@@ -777,7 +754,7 @@ public class HelloController {
         // Dropdown para escolher a tabela
         Label tableLabel = new Label("Select Table:");
         ComboBox<String> tableComboBox = new ComboBox<>();
-        tableComboBox.getItems().addAll("Category", "Pizza", "Orders");
+        tableComboBox.getItems().addAll("Calendar", "Resdems", "Services");
 
         // Dropdown para selecionar a PK
         Label pkLabel = new Label("Select Record:");
@@ -796,9 +773,9 @@ public class HelloController {
                 pkComboBox.setDisable(false);
                 pkComboBox.getItems().clear();
                 switch (selectedTable) {
-                    case "Category" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Category", "cname"));
-                    case "Pizza" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Pizza", "pname"));
-                    case "Orders" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Orders", "id"));
+                    case "Calendar" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Calendar", "id"));
+                    case "Resdems" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Resdems", "id"));
+                    case "Services" -> pkComboBox.getItems().addAll(getPrimaryKeysFromTable("Services", "id"));
                 }
             }
         });
@@ -809,9 +786,9 @@ public class HelloController {
             if (selectedPk != null) {
                 fieldContainer.getChildren().clear();
                 switch (selectedTable) {
-                    case "Category" -> populateCategoryFields(fieldContainer, selectedPk);
-                    case "Pizza" -> populatePizzaFields(fieldContainer, selectedPk);
-                    case "Orders" -> populateOrdersFields(fieldContainer, selectedPk);
+                    case "Calendar" -> populateCalendarFields(fieldContainer, selectedPk);
+                    case "Resdems" -> populateResdemsFields(fieldContainer, selectedPk);
+                    case "Services" -> populateServicesFields(fieldContainer, selectedPk);
                 }
                 deleteButton.setDisable(false); // Habilitar o botão de exclusão após a seleção
             }
@@ -822,9 +799,9 @@ public class HelloController {
             String selectedPk = pkComboBox.getValue();
             if (selectedTable != null && selectedPk != null) {
                 switch (selectedTable) {
-                    case "Category" -> deleteCategory(selectedPk);
-                    case "Pizza" -> deletePizza(selectedPk);
-                    case "Orders" -> deleteOrders(selectedPk);
+                    case "Calendar" -> deleteCalendar(selectedPk);
+                    case "Resdems" -> deleteResdems(selectedPk);
+                    case "Services" -> deleteServices(selectedPk);
                 }
             }
         });
@@ -835,31 +812,8 @@ public class HelloController {
         stage.show();
     }
 
-    private void deleteCategory(String selectedPk) {
-        String query = "DELETE FROM Category WHERE cname = ?";
-        try (Connection connection = DatabaseHelper.connect();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, selectedPk);
-            executeDelete(stmt);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void deletePizza(String selectedPk) {
-        String query = "DELETE FROM Pizza WHERE pname = ?";
-        try (Connection connection = DatabaseHelper.connect();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, selectedPk);
-            executeDelete(stmt);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void deleteOrders(String selectedPk) {
-        String query = "DELETE FROM Orders WHERE id = ?";
+    private void deleteCalendar(String selectedPk) {
+        String query = "DELETE FROM Calendar WHERE id = ?";
         try (Connection connection = DatabaseHelper.connect();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, Integer.parseInt(selectedPk));
@@ -869,6 +823,27 @@ public class HelloController {
         }
     }
 
+    private void deleteResdems(String selectedPk) {
+        String query = "DELETE FROM Resdems WHERE id = ?";
+        try (Connection connection = DatabaseHelper.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, Integer.parseInt(selectedPk));
+            executeDelete(stmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteServices(String selectedPk) {
+        String query = "DELETE FROM Services WHERE id = ?";
+        try (Connection connection = DatabaseHelper.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, Integer.parseInt(selectedPk));
+            executeDelete(stmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void executeDelete(PreparedStatement stmt) throws SQLException {
         int rowsAffected = stmt.executeUpdate();
@@ -878,8 +853,6 @@ public class HelloController {
             showAlert("Error", "Failed to delete the record.");
         }
     }
-
-
 
     // This method is called when the "Download" menu is clicked
     public void openDownloadForm(ActionEvent actionEvent) {
@@ -930,7 +903,7 @@ public class HelloController {
                         final int currentProgress = i;
 
                         // Update ProgressBar in the JavaFX Application Thread
-                        javafx.application.Platform.runLater(() -> progressBar.setProgress(progress));
+                        Platform.runLater(() -> progressBar.setProgress(progress));
                     }
 
                     // Perform the actual download
@@ -940,12 +913,12 @@ public class HelloController {
                     saveDataToFile(exchangeRates);
 
                     // Show success alert (must run on JavaFX Application Thread)
-                    javafx.application.Platform.runLater(() ->
+                    Platform.runLater(() ->
                             showAlert("Download Successful", "All data has been downloaded to bank.txt.")
                     );
 
                 } catch (Exception ex) {
-                    javafx.application.Platform.runLater(() ->
+                    Platform.runLater(() ->
                             showAlert("Error", "An error occurred during the download: " + ex.getMessage())
                     );
                 }
@@ -1143,7 +1116,7 @@ public class HelloController {
 
         // Layout setup
         VBox vbox = new VBox(10);
-        vbox.setPadding(new javafx.geometry.Insets(10));
+        vbox.setPadding(new Insets(10));
         vbox.getChildren().addAll(
                 startDateLabel, startDatePicker,
                 endDateLabel, endDatePicker,
@@ -1190,10 +1163,6 @@ public class HelloController {
 
         return lineChart;
     }
-
-
-
-
 
     public void parallelAction(ActionEvent actionEvent) {
         // Create the UI components
@@ -1266,7 +1235,6 @@ public class HelloController {
         threadTwo.setDaemon(true);
         threadTwo.start();
     }
-
 
     public void accountInformationAction(ActionEvent actionEvent) {
         // Crie um contexto com a URL e Token fornecidos
@@ -1352,7 +1320,6 @@ public class HelloController {
         new Thread(task).start();
     }
 
-
     public void currentPricesAction(ActionEvent actionEvent) {
         // Create a new stage for the "Current Prices" submenu
         Stage priceStage = new Stage();
@@ -1412,7 +1379,7 @@ public class HelloController {
             try {
                 // Create a request to get current prices
                 PricingGetRequest request = new PricingGetRequest(
-                        new com.oanda.v20.account.AccountID(Config.ACCOUNTID),
+                        new AccountID(Config.ACCOUNTID),
                         List.of(selectedPair.replace("/", "_"))
                 );
 
@@ -1535,7 +1502,6 @@ public class HelloController {
         });
     }
 
-
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -1543,7 +1509,6 @@ public class HelloController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 
     public void positionOpeningAction(ActionEvent actionEvent) {
 
@@ -1631,8 +1596,6 @@ public class HelloController {
         });
     }
 
-
-
     public void positionClosingAction(ActionEvent actionEvent) {
         // Create a new stage for the "Position Closing" submenu
         Stage closingStage = new Stage();
@@ -1707,7 +1670,6 @@ public class HelloController {
         });
     }
 
-
     public void openedPositionsAction(ActionEvent actionEvent) {
         // Cria uma nova janela para o submenu "Opened Positions"
         Stage openedPositionsStage = new Stage();
@@ -1723,7 +1685,7 @@ public class HelloController {
         titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         // Tabela para exibir as posições abertas
-        TableView<com.dija.lecturehomework.model.Position> positionsTable = new TableView<>();
+        TableView<Position> positionsTable = new TableView<>();
         positionsTable.setPrefWidth(400);
 
         // Colunas da tabela
@@ -1757,7 +1719,5 @@ public class HelloController {
         openedPositionsStage.setScene(scene);
         openedPositionsStage.show();
     }
-
-
 
 }
